@@ -22,7 +22,7 @@ class BookmarkController extends Controller
             'url' => $request->url,
         ]);
 
-        FetchMetadataJob::dispatch($bookmark);
+        FetchMetadataJob::dispatch($bookmark->refresh()->id);
 
         return response()->json(['message' => 'Bookmark submitted successfully', 'data' => $bookmark], Response::HTTP_CREATED);
     }

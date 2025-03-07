@@ -20,7 +20,7 @@ class FetchMetadataJob implements ShouldQueue
 
     public int $tries = 3;
 
-    public function __construct(protected Bookmark $bookmark) {}
+    public function __construct(protected int $bookmarkId) {}
 
     /**
      * Calculate the number of seconds to wait before retrying the job.
@@ -39,14 +39,15 @@ class FetchMetadataJob implements ShouldQueue
      */
     public function middleware(): array
     {
-        return [new WithoutOverlapping($this->bookmark->id)];
+        return [new WithoutOverlapping($this->bookmarkId)];
     }
 
     public function handle()
     {
         try {
+            $bookmark = Bookmark::findOrFail($this->bookmarkId);
             $client = new Client();
-            $response = $client->get($this->bookmark->url);
+            $response = $client->get($bookmark->url);
             $html = $response->getBody()->getContents();
 
             // Parse metadata
@@ -64,15 +65,15 @@ class FetchMetadataJob implements ShouldQueue
                 }
             }
 
-            $this->bookmark->update([
+            $bookmark->update([
                 'title' => $title,
                 'description' => $description,
             ]);
         }
         catch (Throwable $e) {
             Log::error('Failed to fetch metadata', [
-                'bookmark_id' => $this->bookmark->id,
-                'url' => $this->bookmark->url,
+                'bookmark_id' => $bookmark->id,
+                'url' => $bookmark->url,
                 'error' => $e->getMessage(),
             ]);
             $this->fail();

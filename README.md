@@ -1,58 +1,163 @@
-## Laravel bookmark metadata fetcher with docker and make command
 
-I wanted to use a Docker setup that easily brings up Laravel without any hassle—no need for Laravel Sail or anything else. Also, I wanted to use the `make` command without constantly going into Docker or attaching to it.
+---
 
-### Getting Started
+# **Laravel Bookmark Metadata Fetcher**
 
-Everything is super simple. Just enter these commands in order:
+A simple Laravel application that allows users to store bookmarks, fetch metadata using a background job, and retrieve stored bookmarks. This project uses a Docker setup for easy environment configuration and includes `make` commands for streamlined development without needing to manually interact with containers.
 
+---
+
+## **Setup Instructions**
+
+### **1. Clone the Repository**
+```bash
+git clone https://github.com/KomeilShadan/bookmark-metadata-fetcher.git
+cd bookmark-metadata-fetcher
+```
+
+### **2. Build and Start the Project**
+Run the following command to build and start the Docker containers:
 ```bash
 make up
-make install-laravel
 ```
 
+### **3. Install Dependencies**
+- Install PHP dependencies:
+  ```bash
+  make composer install
+  ```
+- Set up the `.env` file:
+  ```bash
+  cp .env.example .env
+  ```
+- Generate the application key:
+  ```bash
+  make art key:generate
+  ```
 
-1. You don’t need to go inside the container to work with artisan. Just use this command:
+### **4. Run Migrations**
+Run the database migrations to create the necessary tables:
 ```bash
-make art ...
+make art migrate
 ```
-For example:
+
+### **5. Access the Application**
+The application will be available at:
+```
+http://localhost:8080
+```
+
+---
+
+## **Endpoints**
+
+### **1. Store a Bookmark**
+- **Endpoint:** `POST /api/bookmarks`
+- **Request Body:**
+  ```json
+  {
+    "url": "https://google.com"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "message": "Bookmark submitted successfully!",
+    "data": {
+      "id": "some-uuid",
+      "url": "https://google.com",
+      "title": "Example Title",
+      "description": "Example Description"
+    }
+  }
+  ```
+
+### **2. Retrieve Bookmarks**
+- **Endpoint:** `GET /api/bookmarks`
+- **Response:**
+  ```json
+  {
+    "data": [
+      {
+        "id": "some-uuid",
+        "url": "https://google.com",
+        "title": "Example Title",
+        "description": "Example Description",
+        "created_at": "2025-03-07T10:00:00Z"
+      }
+    ]
+  }
+  ```
+
+---
+
+## **Background Job**
+
+- When a bookmark is stored, a background job is triggered to fetch metadata (e.g., title and description) for the provided URL.
+- The metadata is then stored in the database and associated with the bookmark.
+
+---
+
+## **Testing**
+
+Run the following command to execute tests:
+```bash
+make test
+```
+
+---
+
+## **Makefile Commands**
+
+The project is set up with `make` commands to simplify common tasks. Here are some useful commands:
+
+### **Artisan Commands**
+You can run Laravel Artisan commands without entering the container:
+```bash
+make art <command>
+```
+Example:
 ```bash
 make art route:list
 ```
-And I did the same for composer. You can use it easily like this:
-```bash
-make composer ...
-```
-2. Here's another cool thing you might like. Cleaning up your code with a standard format. I set this up with pint.
 
+### **Composer Commands**
+Run Composer commands with:
 ```bash
-make pint format
-```
-To check all files, use this command:
-```bash
-make pint format-all
+make composer <command>
 ```
 
-other commands: 
+### **Code Formatting**
+- Format changed files:
+  ```bash
+  make pint format
+  ```
+- Format all files:
+  ```bash
+  make pint format-all
+  ```
 
-```bash
-build             run docker compose build
-ps                docker compose ps
-up                docker compose up
-down              docker compose down
-down-volumes      docker compose down with volumes
-restart           docker compose restart
-composer-install  composer install
-composer          run composer commands
-tinker            artisan tinker
-art               run artisan command
-npm               run npm command
-migration         make a new migration
-migrate           run artisan migrate
-horizon           run horizon
-install-laravel   Download source Laravel and update .env file
-pint              format codes with pint
-test              run tests
-```
+### **Other Commands**
+| Command            | Description                                  |
+|--------------------|----------------------------------------------|
+| `make build`       | Run `docker compose build`.                 |
+| `make ps`          | List running containers.                    |
+| `make up`          | Start the Docker containers.                |
+| `make down`        | Stop the Docker containers.                 |
+| `make down-volumes`| Stop containers and remove volumes.         |
+| `make restart`     | Restart the Docker containers.              |
+| `make composer-install` | Run `composer install`.                |
+| `make tinker`      | Run `artisan tinker`.                       |
+| `make migration`   | Create a new database migration.            |
+| `make migrate`     | Run database migrations.                    |
+| `make horizon`     | Run Laravel Horizon.                        |
+| `make install-laravel` | Download Laravel source and set up `.env`. |
+| `make test`        | Run tests.                                  |
 
+---
+
+## **Contact**
+
+For any questions or issues, feel free to contact **Komeil Shadannejad** at **kshadannejad@gmail.com**.
+
+---
