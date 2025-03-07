@@ -54,12 +54,12 @@ class FetchMetadataJob implements ShouldQueue
             //ignore warnings or notices if the provided HTML is not well-formed or contains invalid markup.
             @$dom->loadHTML($html);
 
-            $title = $dom->getElementsByTagName('title')->item(0)?->nodeValue;
+            $title = $dom->getElementsByTagName('title')->item(0)?->nodeValue ?? 'No title found';
             $description = '';
 
             foreach ($dom->getElementsByTagName('meta') as $meta) {
                 if (strtolower($meta->getAttribute('name')) === 'description') {
-                    $description = $meta->getAttribute('content');
+                    $description = $meta->getAttribute('content') ?? 'No description found';
                     break;
                 }
             }

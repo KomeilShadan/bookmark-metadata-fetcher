@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBookmarkRequest;
 use App\Jobs\FetchMetadataJob;
 use App\Models\Bookmark;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookmarkController extends Controller
@@ -16,12 +16,8 @@ class BookmarkController extends Controller
         return response()->json(['data' => $bookmarks]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreBookmarkRequest $request): JsonResponse
     {
-        $request->validate([
-            'url' => 'required|url',
-        ]);
-
         $bookmark = Bookmark::query()->create([
             'url' => $request->url,
         ]);
