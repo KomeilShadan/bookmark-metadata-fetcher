@@ -12,7 +12,8 @@ class BookmarkController extends Controller
 {
     public function index(): JsonResponse
     {
-        $bookmarks = Bookmark::all();
+        $bookmarks = Bookmark::query()->orderByDesc('id')->get();
+
         return response()->json(['data' => $bookmarks]);
     }
 
