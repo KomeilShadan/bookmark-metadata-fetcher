@@ -17,7 +17,7 @@ class ApiAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $apiToken = (string) $request->header('Authorization');
+        $apiToken = (string) $request->header('x-api-key');
 
         if ($apiToken !== config('api.api_token')) {
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);

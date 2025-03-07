@@ -17,11 +17,15 @@ class Bookmark extends Model
         'description'
     ];
 
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     protected static function boot(): void
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->id = (string) Str::uuid();
+            $model->id = (string) Str::orderedUuid();
         });
     }
 }
