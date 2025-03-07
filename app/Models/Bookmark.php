@@ -11,6 +11,10 @@ class Bookmark extends Model
 {
     use SoftDeletes, HasFactory;
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'url',
         'title',

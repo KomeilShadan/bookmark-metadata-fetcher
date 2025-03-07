@@ -10,17 +10,17 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class FetchMetadataJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable;
 
     public int $tries = 3;
 
-    public function __construct(protected int $bookmarkId) {}
+    //To avoid serializing and performance issues, we pass the UUID here and re-fetch from database to process in the job.
+    public function __construct(protected string $bookmarkId) {}
 
     /**
      * Calculate the number of seconds to wait before retrying the job.
@@ -45,7 +45,7 @@ class FetchMetadataJob implements ShouldQueue
     public function handle()
     {
         try {
-            $bookmark = Bookmark::findOrFail($this->bookmarkId);
+            $bookmark = Bookmark::query()->findOrFail($this->bookmarkId);
             $client = new Client();
             $response = $client->get($bookmark->url);
             $html = $response->getBody()->getContents();
