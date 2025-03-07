@@ -1,4 +1,4 @@
-## Laravel bookmark metadata fetcher with docker and make commad
+## Laravel bookmark metadata fetcher with docker and make command
 
 I wanted to use a Docker setup that easily brings up Laravel without any hassle—no need for Laravel Sail or anything else. Also, I wanted to use the `make` command without constantly going into Docker or attaching to it.
 

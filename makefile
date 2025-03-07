@@ -55,24 +55,24 @@ install-laravel: ## Download source Laravel and update .env file
 	@if [ -d "./app" ]; then \
 		echo "project already exists."; \
 	else \
-		chmod +x ./docker-repo/install_laravel.sh;\
-		./docker-repo/install_laravel.sh;\
+		chmod +x ./deployment/install_laravel.sh;\
+		./deployment/install_laravel.sh;\
 		chown -R $(USER):$(GROUP) .;\
 		rm -rf src;\
 	fi
 
 pint-to-git: ## Download source Laravel and update .env file
 	@if [ -d "./.git" ]; then \
-		chmod +x ./docker-repo/scripts/setup.sh;\
-		./docker-repo/scripts/setup.sh;\
+		chmod +x ./deployment/scripts/setup.sh;\
+		./deployment/scripts/setup.sh;\
 	fi
 
 format: ## format codes with pint
 	docker compose run -T --rm php ./vendor/bin/pint --dirty
 
 format-all: ## format codes with pint
-	docker compose run -T --rm php ./vendor/bin/pint 
-	
+	docker compose run -T --rm php ./vendor/bin/pint
+
 test: ## run tests
 	docker compose run --rm artisan test
 
@@ -87,8 +87,3 @@ help:
     		-e 's/^\(.\+\):\(.*\)/$(shell tput setaf 6)\1$(shell tput sgr0):\2/' \
     		$(MAKEFILE_LIST) | column -c2 -t -s :
 
-# Catch-all for undefined commands
-%:
-	@echo "Error: Unknown command '$(MAKECMDGOALS)'"
-	@echo "Showing help:"
-	@$(MAKE) help
