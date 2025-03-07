@@ -31,7 +31,7 @@ class BookmarkTest extends TestCase
 
         Bookmark::factory(5)->create();
 
-        $response = $this->getJson('/api/bookmarks', ['Authorization' => config('api.api_token')]);
+        $response = $this->getJson('/api/bookmarks', ['x-api-key' => config('api.api_token')]);
 
         $response->assertStatus(Response::HTTP_OK)
                  ->assertJsonStructure(['data' => [['id', 'url', 'title', 'description', 'created_at']]]);
@@ -41,7 +41,7 @@ class BookmarkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->getJson('/api/bookmarks', ['Authorization' => config('api.api_token')]);
+        $response = $this->getJson('/api/bookmarks', ['x-api-key' => config('api.api_token')]);
 
         $response->assertStatus(Response::HTTP_OK)
                  ->assertJson(['data' => []]);
@@ -57,7 +57,7 @@ class BookmarkTest extends TestCase
             'url' => $validUrl,
         ],
         [
-            'Authorization' => config('api.api_token')
+            'x-api-key' => config('api.api_token')
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED)
@@ -80,7 +80,7 @@ class BookmarkTest extends TestCase
             'url' => 'https://invalid-url-123456.com',
         ],
         [
-            'Authorization' => config('api.api_token')
+            'x-api-key' => config('api.api_token')
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -92,7 +92,7 @@ class BookmarkTest extends TestCase
         $this->withoutExceptionHandling();
         $this->expectException(ValidationException::class);
 
-        $response = $this->postJson('/api/bookmarks', [], ['Authorization' => config('api.api_token')]);
+        $response = $this->postJson('/api/bookmarks', [], ['x-api-key' => config('api.api_token')]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                  ->assertJsonValidationErrors(['url']);
